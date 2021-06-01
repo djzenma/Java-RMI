@@ -19,9 +19,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
 
 public class CenterServer extends UnicastRemoteObject implements RecordOps {
     private HashMap<Character, ArrayList<Record>> records;
@@ -32,6 +30,7 @@ public class CenterServer extends UnicastRemoteObject implements RecordOps {
 
     public CenterServer(Location location, int registryPort, int recordsCountPort) throws RemoteException {
         super();
+        records = new HashMap<>();
         totalTRecords = 0;
         totalSRecords = 0;
         this.location = location;
@@ -41,7 +40,7 @@ public class CenterServer extends UnicastRemoteObject implements RecordOps {
                     " and records count on port " + recordsCountPort);
 
             // receive records count requests thread
-            Thread recordsCountThread = new Thread(new RecordsCountThread(recordsCountPort, totalTRecords + totalSRecords));
+            Thread recordsCountThread = new Thread(new RecordsCountThread(recordsCountPort, this));
             recordsCountThread.start();
 
             // RMI operations
@@ -61,7 +60,7 @@ public class CenterServer extends UnicastRemoteObject implements RecordOps {
                                  String specialization,
                                  Location location) throws RemoteException {
         TeacherRecord teacherRecord = new TeacherRecord(
-                "TR" + String.format("%05d", totalTRecords++),
+                "TR" + String.format("%05d", ++totalTRecords),
                 firstName,
                 lastName,
                 address,
@@ -69,7 +68,10 @@ public class CenterServer extends UnicastRemoteObject implements RecordOps {
                 specialization,
                 location);
 
-        this.records.get(lastName.charAt(0)).add(teacherRecord);
+        if(!this.records.containsKey(lastName.charAt(0)))
+            this.records.put(lastName.charAt(0), new ArrayList<>(List.of(teacherRecord)));
+        else
+            this.records.get(lastName.charAt(0)).add(teacherRecord);
 
         System.out.println(firstName + " " + lastName + " TR Created");
         // TODO:: store this op in log
@@ -83,14 +85,17 @@ public class CenterServer extends UnicastRemoteObject implements RecordOps {
                                  Status status,
                                  Date statusDate) throws RemoteException {
         StudentRecord studentRecord = new StudentRecord(
-                "SR" + String.format("%05d", totalSRecords++),
+                "SR" + String.format("%05d", ++totalSRecords),
                 firstName,
                 lastName,
                 courseRegistered,
                 status,
                 statusDate);
 
-        this.records.get(lastName.charAt(0)).add(studentRecord);
+        if(!this.records.containsKey(lastName.charAt(0)))
+            this.records.put(lastName.charAt(0), new ArrayList<>(List.of(studentRecord)));
+        else
+            this.records.get(lastName.charAt(0)).add(studentRecord);
 
         System.out.println(firstName + " " + lastName + " SR Created");
         // TODO:: store this op in log
@@ -117,13 +122,27 @@ public class CenterServer extends UnicastRemoteObject implements RecordOps {
             e.printStackTrace();
         }
 
+        // TODO:: store this op in log
         return recordCounts;
     }
 
     @Override
     public boolean editRecord(String recordID, String fieldName, String newValue) throws RemoteException {
-        System.out.println("Edit");
+        for(ArrayList<Record> recordList : records.values()) {
+            for (Record record : recordList) {
+                if (record.getRecordID().equals(recordID)) {
+                    record.set(fieldName, newValue);
+                    // TODO:: store this op in log
+                    return true;
+                }
+            }
+        }
+        // TODO:: store this op in log
         return false;
+    }
+
+    public int getCenterTotalRecords() {
+        return totalTRecords + totalSRecords;
     }
 
 

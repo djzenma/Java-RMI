@@ -1,15 +1,24 @@
 package com.company.record;
 
+import java.util.HashMap;
+
 public class Record {
-    private final String recordID;
-    private final String firstName;
-    private final String lastName;
+
+    protected final HashMap<String, Object> map;
+
 
     public Record(String recordID, String firstName, String lastName) {
-        this.recordID = recordID;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        map = new HashMap<>();
+        map.put("recordID", recordID);
+        map.put("firstName", firstName);
+        map.put("lastName", lastName);
     }
 
+    public String getRecordID() {
+        return (String) map.get("recordID");
+    }
 
+    public void set(String field, Object value) {
+        map.put(field, value);
+    }
 }

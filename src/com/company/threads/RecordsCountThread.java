@@ -1,17 +1,19 @@
 package com.company.threads;
 
+import com.company.CenterServer;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.nio.ByteBuffer;
 
 public class RecordsCountThread implements Runnable{
-    private int recordsCountPort;
-    private int totalRecords;
+    private final int recordsCountPort;
+    private final CenterServer server;
 
-    public RecordsCountThread(int recordsCountPort, int totalRecords) {
+    public RecordsCountThread(int recordsCountPort, CenterServer server) {
         this.recordsCountPort = recordsCountPort;
-        this.totalRecords = totalRecords;
+        this.server = server;
     }
 
     @Override
@@ -23,7 +25,7 @@ public class RecordsCountThread implements Runnable{
                 DatagramPacket req = new DatagramPacket(buf, buf.length);
                 socket.receive(req);
 
-                byte[] msg = ByteBuffer.allocate(4).putInt(totalRecords).array();
+                byte[] msg = ByteBuffer.allocate(4).putInt(server.getCenterTotalRecords()).array();
                 DatagramPacket reply = new DatagramPacket(msg, msg.length, req.getAddress(), req.getPort());
                 socket.send(reply);
             }

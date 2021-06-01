@@ -6,10 +6,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class StudentRecord extends Record {
-    private final ArrayList<String> courses;
-    private final Status status;
-    private final Date statusDate;
-
     public StudentRecord(String recordID,
                          String firstName,
                          String lastName,
@@ -17,8 +13,8 @@ public class StudentRecord extends Record {
                          Status status,
                          Date statusDate) {
         super(recordID, firstName, lastName);
-        this.courses = courses;
-        this.status = status;
-        this.statusDate = statusDate;
+        map.put("courses", courses);
+        map.put("status", status);
+        map.put("statusDate", statusDate);
     }
 }
