@@ -9,9 +9,9 @@ import java.rmi.registry.Registry;
 public class ManagerClient {
     private String managerID;
 
-    public ManagerClient(int port) {
+    public ManagerClient(int serverRegistryPort) {
         try {
-            Registry registry = LocateRegistry.getRegistry(port);
+            Registry registry = LocateRegistry.getRegistry(serverRegistryPort);
 
             RecordOps ops = (RecordOps) registry.lookup("ops");
             ops.getRecordCounts();
@@ -19,4 +19,6 @@ public class ManagerClient {
             e.printStackTrace();
         }
     }
+
+
 }

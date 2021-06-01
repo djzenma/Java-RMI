@@ -1,5 +1,6 @@
 package com.company.rmi;
 
+import com.company.CenterServer;
 import com.company.types.Location;
 import com.company.types.Status;
 
@@ -10,7 +11,10 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class RecordOpsClass extends UnicastRemoteObject implements RecordOps {
-    public RecordOpsClass() throws RemoteException {
+    CenterServer server;
+
+    public RecordOpsClass(CenterServer server) throws RemoteException {
+        this.server = server;
     }
 
     @Override

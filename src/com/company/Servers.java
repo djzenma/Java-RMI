@@ -1,12 +1,25 @@
 package com.company;
 
+import com.company.config.Config;
 import com.company.types.Location;
+
+import java.rmi.RemoteException;
 
 public class Servers {
 
     public static void main(String[] args) {
-        CenterServer mtlServer = new CenterServer(7777, Location.MTL);
-        //CenterServer lvlServer = new CenterServer(8888, Location.LVL);
-        //CenterServer ddoServer = new CenterServer(9999, Location.DDO);
+        try {
+            CenterServer mtlServer = new CenterServer(Location.MTL,
+                    Config.MTLServerRegistryPort,
+                    Config.MTLServerRecordsCountPort);
+            CenterServer lvlServer = new CenterServer(Location.LVL,
+                    Config.LVLServerRegistryPort,
+                    Config.LVLServerRecordsCountPort);
+            CenterServer ddoServer = new CenterServer(Location.DDO,
+                    Config.DDOServerRegistryPort,
+                    Config.DDOServerRecordsCountPort);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 }
