@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-public interface RecordOps extends Remote {
+public interface CenterServer extends Remote {
 
     public boolean createTRecord( String firstName,
                                   String lastName,
@@ -26,5 +26,5 @@ public interface RecordOps extends Remote {
 
     public HashMap<Location, Integer> getRecordCounts() throws RemoteException;
 
-    public boolean editRecord(String recordID, String fieldName, String newValue) throws RemoteException;
+    public boolean editRecord(String recordID, String fieldName, Object newValue) throws RemoteException;
 }

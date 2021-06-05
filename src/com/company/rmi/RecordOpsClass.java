@@ -1,6 +1,6 @@
 package com.company.rmi;
 
-import com.company.CenterServer;
+import com.company.Server;
 import com.company.types.Location;
 import com.company.types.Status;
 
@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-public class RecordOpsClass extends UnicastRemoteObject implements RecordOps {
-    CenterServer server;
+public class RecordOpsClass extends UnicastRemoteObject implements CenterServer {
+    Server server;
 
-    public RecordOpsClass(CenterServer server) throws RemoteException {
+    public RecordOpsClass(Server server) throws RemoteException {
         this.server = server;
     }
 
@@ -45,7 +45,7 @@ public class RecordOpsClass extends UnicastRemoteObject implements RecordOps {
     }
 
     @Override
-    public boolean editRecord(String recordID, String fieldName, String newValue) throws RemoteException {
+    public boolean editRecord(String recordID, String fieldName, Object newValue) throws RemoteException {
         System.out.println("Edit");
         return false;
     }

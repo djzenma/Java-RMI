@@ -21,4 +21,8 @@ public class Record {
     public void set(String field, Object value) {
         map.put(field, value);
     }
+
+    public String getLastName() {
+        return (String) map.get("lastName");
+    }
 }

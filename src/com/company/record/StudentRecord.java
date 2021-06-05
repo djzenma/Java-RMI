@@ -17,4 +17,5 @@ public class StudentRecord extends Record {
         map.put("status", status);
         map.put("statusDate", statusDate);
     }
+
 }

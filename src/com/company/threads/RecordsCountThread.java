@@ -1,6 +1,6 @@
 package com.company.threads;
 
-import com.company.CenterServer;
+import com.company.Server;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -9,9 +9,9 @@ import java.nio.ByteBuffer;
 
 public class RecordsCountThread implements Runnable{
     private final int recordsCountPort;
-    private final CenterServer server;
+    private final Server server;
 
-    public RecordsCountThread(int recordsCountPort, CenterServer server) {
+    public RecordsCountThread(int recordsCountPort, Server server) {
         this.recordsCountPort = recordsCountPort;
         this.server = server;
     }

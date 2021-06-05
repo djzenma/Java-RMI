@@ -9,4 +9,6 @@ public final class Config {
 
     public static final int DDOServerRegistryPort = 9000;
     public static final int DDOServerRecordsCountPort = 9001;
+
+    public static int RecordIDsServerPort = 6000;
 }

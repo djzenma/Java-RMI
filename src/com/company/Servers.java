@@ -9,13 +9,17 @@ public class Servers {
 
     public static void main(String[] args) {
         try {
-            CenterServer mtlServer = new CenterServer(Location.MTL,
+            RecordIDsServer recordIDsServer = new RecordIDsServer(Config.RecordIDsServerPort);
+
+            Server mtlServer = new Server(Location.MTL,
                     Config.MTLServerRegistryPort,
                     Config.MTLServerRecordsCountPort);
-            CenterServer lvlServer = new CenterServer(Location.LVL,
+
+            Server lvlServer = new Server(Location.LVL,
                     Config.LVLServerRegistryPort,
                     Config.LVLServerRecordsCountPort);
-            CenterServer ddoServer = new CenterServer(Location.DDO,
+
+            Server ddoServer = new Server(Location.DDO,
                     Config.DDOServerRegistryPort,
                     Config.DDOServerRecordsCountPort);
         } catch (RemoteException e) {

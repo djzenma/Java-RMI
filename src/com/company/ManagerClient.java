@@ -1,7 +1,6 @@
 package com.company;
 
-import com.company.rmi.RecordOps;
-import com.company.rmi.RecordOpsClass;
+import com.company.rmi.CenterServer;
 import com.company.types.Location;
 import com.company.types.Status;
 
@@ -18,8 +17,9 @@ public class ManagerClient {
         try {
             Registry registry = LocateRegistry.getRegistry(serverRegistryPort);
 
-            RecordOps ops = (RecordOps) registry.lookup("ops");
+            CenterServer ops = (CenterServer) registry.lookup("ops");
             ops.createTRecord("Mohamed", "Shaalan", "AUC", "1234", "CE", Location.MTL);
+            ops.createTRecord("Nouri", "Sakr", "AUC", "1234", "CE", Location.MTL);
             ops.createSRecord("Mazen", "Eid", new ArrayList<>(List.of("DSD", "Comp")), Status.ACTIVE, new Date(new Date().getTime()));
             ops.getRecordCounts();
         } catch (Exception e) {
