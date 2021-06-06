@@ -25,4 +25,10 @@ public class Record {
     public String getLastName() {
         return (String) map.get("lastName");
     }
+
+    public String print() {
+        return "recordID: " + map.get("recordID") + ", " +
+                "firstName: " + map.get("firstName") + ", " +
+                "lastName: " + map.get("lastName");
+    };
 }

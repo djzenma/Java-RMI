@@ -18,4 +18,9 @@ public class StudentRecord extends Record {
         map.put("statusDate", statusDate);
     }
 
+    // TODO
+    @Override
+    public String print() {
+        return super.print();
+    }
 }

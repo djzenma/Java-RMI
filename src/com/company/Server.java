@@ -9,6 +9,7 @@ import com.company.threads.RecordsCountThread;
 import com.company.types.Location;
 import com.company.types.Status;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -19,6 +20,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.Timestamp;
 import java.util.*;
 
 public class Server extends UnicastRemoteObject implements CenterServer {
@@ -26,6 +28,7 @@ public class Server extends UnicastRemoteObject implements CenterServer {
     private int totalTRecords;
     private int totalSRecords;
     private Location location;
+    private FileWriter writer;
 
 
     public Server(Location location, int registryPort, int recordsCountPort) throws RemoteException {
@@ -100,7 +103,15 @@ public class Server extends UnicastRemoteObject implements CenterServer {
             e.printStackTrace();
         }
 
-        // TODO:: store this op in log
+        try {
+            writeEvent("RECORDS COUNT REQUESTED: " +
+                    Location.MTL.name() + " has " + recordCounts.get(Location.MTL) + ", " +
+                    Location.LVL.name() + " has " + recordCounts.get(Location.LVL) + ", " +
+                    Location.DDO.name() + " has " + recordCounts.get(Location.DDO));
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Failed to log the records count!");
+        }
         return recordCounts;
     }
 
@@ -111,12 +122,23 @@ public class Server extends UnicastRemoteObject implements CenterServer {
             for (Record record : recordList) {
                 if (record.getRecordID().equals(recordID)) {
                     record.set(fieldName, newValue);
-                    // TODO:: store this op in log
+                    try {
+                        writeEvent("RECORD EDITED: Changed " + fieldName + " to be " + newValue.toString());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        System.out.println("Failed to log the record edit!");
+                    }
                     return true;
                 }
             }
         }
-        // TODO:: store this op in log
+        try {
+            writeEvent("RECORD NOT EDITED: Could not edit the field \"" + fieldName + "\" to be \"" + newValue.toString() +
+                    "\" of the record with ID " + recordID);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Failed to log the record edit!");
+        }
         return false;
     }
 
@@ -143,11 +165,31 @@ public class Server extends UnicastRemoteObject implements CenterServer {
                 this.records.put(lastName.charAt(0), new ArrayList<>(List.of(record)));
             else
                 this.records.get(lastName.charAt(0)).add(record);
+            if(prefix.equals("TR"))
+                totalTRecords++;
+            else
+                totalSRecords++;
         }
 
-        // TODO:: store this op in log
-        System.out.println(record.getLastName() + " " + prefix + " Created");
+        try {
+            writeEvent("RECORD CREATED: " + record.print());
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Failed to write the record creation event in the log!");
+        }
         return true;
+    }
+
+    /**
+     * Writes event to the server's corresponding log file depending on its location
+     * @param event the event to be logged
+     * @throws IOException
+     */
+    private synchronized void writeEvent(String event) throws IOException {
+        writer = new FileWriter("log/server/" + location.name() + ".txt", true);
+        writer.write(new Timestamp(new Date().getTime()).toString() + " " + event + "\n");
+        System.out.println(event);
+        writer.close();
     }
 
     /**
@@ -180,6 +222,7 @@ public class Server extends UnicastRemoteObject implements CenterServer {
 
     private DatagramPacket sendAndReceiveUDP(int port, String msg) throws IOException {
         DatagramSocket socket = new DatagramSocket();
+
         // send request
         InetAddress host = InetAddress.getByName("localhost");
         DatagramPacket req = new DatagramPacket(msg.getBytes(), msg.length(), host, port);
