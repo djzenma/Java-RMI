@@ -1,6 +1,7 @@
 package com.company.record;
 
 import java.util.HashMap;
+import java.util.Set;
 
 public class Record {
 
@@ -30,5 +31,9 @@ public class Record {
         return "recordID: " + map.get("recordID") + ", " +
                 "firstName: " + map.get("firstName") + ", " +
                 "lastName: " + map.get("lastName");
-    };
+    }
+
+    public Set<String> getFieldNames() {
+        return map.keySet();
+    }
 }

@@ -17,9 +17,12 @@ public class TeacherRecord extends Record{
         map.put("location", location);
     }
 
-    // TODO
     @Override
     public String print() {
-        return super.print();
+        return super.print() + ", " +
+                "address: " + map.get("address") + ", " +
+                "phone: " + map.get("phone") + ", " +
+                "specialization: " + map.get("specialization") + ", " +
+                "location: " + ((Location) map.get("location")).name();
     }
 }

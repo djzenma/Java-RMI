@@ -96,6 +96,18 @@ public class ClientController {
                     }
                     break;
                 case 4:
+                    HashMap<String, Object> editArgs = view.promptEditRecord();
+                    try {
+                        boolean isEdited = client.editRecord(
+                                (String) editArgs.get("recordID"),
+                                (String) editArgs.get("fieldName"),
+                                editArgs.get("newValue")
+                        );
+                        view.operationStatus(isEdited);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                        System.out.println("Edit Failed!\n\n");
+                    }
                     break;
                 case 5:
                     System.out.println("Bye Bye!");

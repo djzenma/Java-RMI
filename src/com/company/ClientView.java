@@ -1,5 +1,8 @@
 package com.company;
 
+import com.company.record.Record;
+import com.company.record.StudentRecord;
+import com.company.record.TeacherRecord;
 import com.company.types.Location;
 import com.company.types.Status;
 
@@ -47,18 +50,7 @@ public class ClientView {
         return args;
     }
 
-
-    public HashMap<String, Object> promptSRecord() {
-        HashMap<String, Object> args = new HashMap<>();
-
-        boolean isValid;
-
-        System.out.print("Enter FirstName: ");
-        args.put("firstName", sc.nextLine());
-
-        System.out.print("Enter LastName: ");
-        args.put("lastName", sc.nextLine());
-
+    public ArrayList<String> promptCourses() {
         System.out.print("Enter the number of courses registered: ");
         int num = Integer.parseInt(sc.nextLine());
         ArrayList<String> courses = new ArrayList<>();
@@ -66,10 +58,12 @@ public class ClientView {
             System.out.print("Enter the course number " + String.valueOf(i + 1) + ": ");
             courses.add(sc.nextLine());
         }
-        args.put("courses", courses);
+        return courses;
+    }
 
+    public Status promptStatus() {
         Status status = null;
-        isValid = false;
+        boolean isValid = false;
         while (!isValid) {
             System.out.println("Enter the number of the corresponding Status: ");
             System.out.println("1 = Active");
@@ -82,9 +76,11 @@ public class ClientView {
                 System.out.println("Please enter a valid number corresponding to the status!");
             }
         }
-        args.put("status", status);
+        return status;
+    }
 
-        isValid = false;
+    public Date promptDate() {
+        boolean isValid = false;
         Date date = null;
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         while (!isValid) {
@@ -98,7 +94,23 @@ public class ClientView {
                 System.out.println("Failed to parse the date");
             }
         }
-        args.put("date", date);
+        return date;
+    }
+
+    public HashMap<String, Object> promptSRecord() {
+        HashMap<String, Object> args = new HashMap<>();
+
+        System.out.print("Enter FirstName: ");
+        args.put("firstName", sc.nextLine());
+
+        System.out.print("Enter LastName: ");
+        args.put("lastName", sc.nextLine());
+
+        args.put("courses", promptCourses());
+
+        args.put("status", promptStatus());
+
+        args.put("date", promptDate());
 
         return args;
     }
@@ -114,8 +126,8 @@ public class ClientView {
         return Integer.parseInt(sc.nextLine());
     }
 
-    public void operationStatus(boolean isCreated) {
-        if (isCreated)
+    public void operationStatus(boolean isSuccess) {
+        if (isSuccess)
             System.out.println("Operation done successfully\n\n");
         else
             System.out.println("Operation failed\n\n");
@@ -124,5 +136,64 @@ public class ClientView {
     public String getManagerID() {
         System.out.println("Please enter your manager ID:");
         return sc.nextLine();
+    }
+
+    public HashMap<String, Object> promptEditRecord() {
+        HashMap<String, Object> args = new HashMap<>();
+
+        System.out.print("Enter the recordID of the record you want to edit: ");
+        args.put("recordID", sc.nextLine());
+
+        TeacherRecord templateTR = new TeacherRecord(null, null, null, null, null, null, null);
+        StudentRecord templateSR = new StudentRecord(null, null, null, null, null, null);
+        Record templateR;
+        if(((String) args.get("recordID")).startsWith("TR"))
+            templateR = templateTR;
+        else
+            templateR = templateSR;
+
+        System.out.println("You can edit one of the following fields:");
+        int i = 0;
+        for (String field: templateR.getFieldNames()) {
+            System.out.println(i + ". " + field);
+            i++;
+        }
+
+        System.out.print("Enter the field name to be edited: ");
+        args.put("fieldName", sc.nextLine());
+
+        // Handle Teacher fields
+        if(((String) args.get("recordID")).startsWith("TR")) {
+            if(!templateTR.getFieldNames().contains((String) args.get("fieldName"))) {
+                System.out.println("The field name you entered is not a valid Teacher Record field!");
+                return null;
+            }
+            else {
+                System.out.print("Enter the new value: ");
+                args.put("newValue", sc.nextLine());
+            }
+        }
+
+        // Handle Student fields
+        else if(((String) args.get("recordID")).startsWith("SR")) {
+            if(!templateSR.getFieldNames().contains((String) args.get("fieldName"))) {
+                System.out.println("The field name you entered is not a valid Student Record field!");
+                return null;
+            }
+            else {
+                String fieldName = (String) args.get("fieldName");
+                System.out.print("Enter the new value: ");
+                if(fieldName.equals("courses"))
+                    args.put("newValue", promptCourses());
+                else if(fieldName.equals("status"))
+                    args.put("newValue", promptStatus());
+                else if(fieldName.equals("statusDate"))
+                    args.put("newValue", promptDate());
+                else
+                    args.put("newValue", sc.nextLine());
+            }
+        }
+
+        return args;
     }
 }

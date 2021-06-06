@@ -18,9 +18,11 @@ public class StudentRecord extends Record {
         map.put("statusDate", statusDate);
     }
 
-    // TODO
     @Override
     public String print() {
-        return super.print();
+        return super.print() + ", " +
+                "courses: " + ((ArrayList<String>) map.get("courses")).toString() + ", " +
+                "status: " + ((Status) map.get("status")).name() + ", " +
+                "statusDate: " + ((Date) map.get("statusDate")).toString();
     }
 }

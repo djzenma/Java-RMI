@@ -123,7 +123,7 @@ public class Server extends UnicastRemoteObject implements CenterServer {
                 if (record.getRecordID().equals(recordID)) {
                     record.set(fieldName, newValue);
                     try {
-                        writeEvent("RECORD EDITED: Changed " + fieldName + " to be " + newValue.toString());
+                        writeEvent("RECORD EDITED: Changed record " + recordID + "'s \"" + fieldName + "\" to be " + newValue.toString());
                     } catch (IOException e) {
                         e.printStackTrace();
                         System.out.println("Failed to log the record edit!");
@@ -133,7 +133,7 @@ public class Server extends UnicastRemoteObject implements CenterServer {
             }
         }
         try {
-            writeEvent("RECORD NOT EDITED: Could not edit the field \"" + fieldName + "\" to be \"" + newValue.toString() +
+            writeEvent("RECORD NOT EDITED: Could not edit the record " + recordID + "'s field \"" + fieldName + "\" to be \"" + newValue.toString() +
                     "\" of the record with ID " + recordID);
         } catch (IOException e) {
             e.printStackTrace();
