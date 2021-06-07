@@ -50,6 +50,19 @@ public class ClientView {
         return args;
     }
 
+    private String promptRecordID() {
+        while (true) {
+            String recordID = sc.nextLine();
+
+            if ((recordID.startsWith("TR") || recordID.startsWith("SR"))
+                    && recordID.length() == 7 && recordID.substring(2).matches("^[0-9]{5}$")) {
+                return recordID;
+            } else {
+                System.out.println("Please enter a valid recordID! The format is SR or TR followed by 5 digits.");
+            }
+        }
+    }
+
     public ArrayList<String> promptCourses() {
         System.out.print("Enter the number of courses registered: ");
         int num = Integer.parseInt(sc.nextLine());
@@ -128,9 +141,9 @@ public class ClientView {
 
     public void operationStatus(boolean isSuccess) {
         if (isSuccess)
-            System.out.println("Operation done successfully\n\n");
+            System.out.println("Operation done successfully\n");
         else
-            System.out.println("Operation failed\n\n");
+            System.out.println("Operation failed\n");
     }
 
     public String getManagerID() {
@@ -138,7 +151,7 @@ public class ClientView {
         return sc.nextLine();
     }
 
-    public HashMap<String, Object> promptEditRecord() {
+    public HashMap<String, Object> promptEditRecord(String managerID) {
         HashMap<String, Object> args = new HashMap<>();
 
         System.out.print("Enter the recordID of the record you want to edit: ");
@@ -169,8 +182,14 @@ public class ClientView {
                 return null;
             }
             else {
+                String fieldName = (String) args.get("fieldName");
+
                 System.out.print("Enter the new value: ");
-                args.put("newValue", sc.nextLine());
+                if(fieldName.equals("recordID")) {
+                    args.put("newValue", promptRecordID());
+                }
+                else
+                    args.put("newValue", sc.nextLine());
             }
         }
 
@@ -181,19 +200,34 @@ public class ClientView {
                 return null;
             }
             else {
-                String fieldName = (String) args.get("fieldName");
                 System.out.print("Enter the new value: ");
-                if(fieldName.equals("courses"))
-                    args.put("newValue", promptCourses());
-                else if(fieldName.equals("status"))
-                    args.put("newValue", promptStatus());
-                else if(fieldName.equals("statusDate"))
-                    args.put("newValue", promptDate());
-                else
-                    args.put("newValue", sc.nextLine());
+
+                String fieldName = (String) args.get("fieldName");
+                switch (fieldName) {
+                    case "recordID":
+                        args.put("newValue", promptRecordID());
+                        break;
+                    case "courses":
+                        args.put("newValue", promptCourses());
+                        break;
+                    case "status":
+                        args.put("newValue", promptStatus());
+                        break;
+                    case "statusDate":
+                        args.put("newValue", promptDate());
+                        break;
+                    default:
+                        args.put("newValue", sc.nextLine());
+                        break;
+                }
             }
         }
 
         return args;
+    }
+
+
+    public void invalidID() {
+        System.out.println("Your recordID is invalid! Make sure it is composed of 'MTL' or 'LVL' or 'DDO' followed by 4 digits.");
     }
 }

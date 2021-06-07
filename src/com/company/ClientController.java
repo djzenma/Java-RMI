@@ -30,11 +30,13 @@ public class ClientController {
         while (!isValidID) {
             managerID = view.getManagerID();
             for (Location val : Location.values()) {
-                if (managerID.startsWith(val.name())) {
+                if (managerID.startsWith(val.name()) && managerID.length() == 7 && managerID.substring(3).matches("^[0-9]{4}$")) {
                     isValidID = true;
                     break;
                 }
             }
+            if(!isValidID)
+                view.invalidID();
         }
 
         switch (managerID.substring(0, 3)) {
@@ -69,7 +71,7 @@ public class ClientController {
                         view.operationStatus(isCreated);
                     } catch (Exception e) {
                         e.printStackTrace();
-                        System.out.println("Creation Failed!\n\n");
+                        System.out.println("Creation Failed!\n");
                     }
                     break;
                 case 2:
@@ -84,7 +86,7 @@ public class ClientController {
                         view.operationStatus(isCreated);
                     } catch (Exception e) {
                         e.printStackTrace();
-                        System.out.println("Creation Failed!\n\n");
+                        System.out.println("Creation Failed!\n");
                     }
                     break;
                 case 3:
@@ -96,7 +98,7 @@ public class ClientController {
                     }
                     break;
                 case 4:
-                    HashMap<String, Object> editArgs = view.promptEditRecord();
+                    HashMap<String, Object> editArgs = view.promptEditRecord(managerID);
                     try {
                         boolean isEdited = client.editRecord(
                                 (String) editArgs.get("recordID"),
@@ -106,7 +108,7 @@ public class ClientController {
                         view.operationStatus(isEdited);
                     } catch (RemoteException e) {
                         e.printStackTrace();
-                        System.out.println("Edit Failed!\n\n");
+                        System.out.println("Edit Failed!\n");
                     }
                     break;
                 case 5:
