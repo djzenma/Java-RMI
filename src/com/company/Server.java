@@ -16,6 +16,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.rmi.AlreadyBoundException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -29,6 +30,9 @@ public class Server extends UnicastRemoteObject implements CenterServer {
     private int totalSRecords;
     private Location location;
     private FileWriter writer;
+    private RecordsCountThread recordsCountRunnable;
+    private Thread recordsCountThread;
+    private Registry registry;
 
 
     public Server(Location location, int registryPort, int recordsCountPort) throws RemoteException {
@@ -40,11 +44,12 @@ public class Server extends UnicastRemoteObject implements CenterServer {
 
         try {
             // receive records count requests thread
-            Thread recordsCountThread = new Thread(new RecordsCountThread(recordsCountPort, this));
+            recordsCountRunnable = new RecordsCountThread(recordsCountPort, this);
+            recordsCountThread = new Thread(recordsCountRunnable);
             recordsCountThread.start();
 
             // RMI operations
-            Registry registry = LocateRegistry.createRegistry(registryPort);
+            registry = LocateRegistry.createRegistry(registryPort);
             registry.bind("ops", this);
 
             System.out.println(location + " server running registry on port " + registryPort +
@@ -140,6 +145,12 @@ public class Server extends UnicastRemoteObject implements CenterServer {
             System.out.println("Failed to log the record edit!");
         }
         return false;
+    }
+
+    @Override
+    public HashMap<Character, ArrayList<Record>> getRecords() throws RemoteException {
+        System.out.println("HERE1 ");
+        return new HashMap<Character, ArrayList<Record>>(records);
     }
 
     /**
@@ -240,5 +251,18 @@ public class Server extends UnicastRemoteObject implements CenterServer {
         return totalTRecords + totalSRecords;
     }
 
-
+    /**
+     * stops its udp thread and unregisters the rmi object and closes registry
+     */
+    public void destroy() {
+        recordsCountRunnable.stop();
+        recordsCountThread.interrupt();
+        try {
+            if(new ArrayList<String>(Arrays.asList(registry.list())).contains("ops"))
+                registry.unbind("ops");
+            UnicastRemoteObject.unexportObject(registry, true);
+        } catch (RemoteException | NotBoundException e) {
+            e.printStackTrace();
+        }
+    }
 }

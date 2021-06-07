@@ -2,7 +2,9 @@ package com.company.record;
 
 import com.company.types.Location;
 
-public class TeacherRecord extends Record{
+import java.io.Serializable;
+
+public class TeacherRecord extends Record implements Serializable {
     public TeacherRecord(String recordID,
                          String firstName,
                          String lastName,
@@ -24,5 +26,9 @@ public class TeacherRecord extends Record{
                 "phone: " + map.get("phone") + ", " +
                 "specialization: " + map.get("specialization") + ", " +
                 "location: " + ((Location) map.get("location")).name();
+    }
+
+    public String getPhone() {
+        return (String) map.get("phone");
     }
 }

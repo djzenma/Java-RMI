@@ -2,10 +2,11 @@ package com.company.record;
 
 import com.company.types.Status;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class StudentRecord extends Record {
+public class StudentRecord extends Record  implements Serializable {
     public StudentRecord(String recordID,
                          String firstName,
                          String lastName,

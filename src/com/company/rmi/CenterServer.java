@@ -1,5 +1,6 @@
 package com.company.rmi;
 
+import com.company.record.Record;
 import com.company.types.Location;
 import com.company.types.Status;
 
@@ -27,4 +28,6 @@ public interface CenterServer extends Remote {
     public HashMap<Location, Integer> getRecordCounts() throws RemoteException;
 
     public boolean editRecord(String recordID, String fieldName, Object newValue) throws RemoteException;
+
+    public HashMap<Character, ArrayList<Record>> getRecords() throws RemoteException;
 }

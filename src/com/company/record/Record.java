@@ -1,9 +1,10 @@
 package com.company.record;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Set;
 
-public class Record {
+public class Record implements Serializable {
 
     protected final HashMap<String, Object> map;
 

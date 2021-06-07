@@ -1,5 +1,6 @@
 package com.company;
 
+import com.company.record.Record;
 import com.company.record.StudentRecord;
 import com.company.record.TeacherRecord;
 import com.company.rmi.CenterServer;
@@ -15,7 +16,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 public class ManagerClient {
     private String managerID;
@@ -142,7 +142,9 @@ public class ManagerClient {
         return isEdited;
     }
 
-    ;
+    public HashMap<Character, ArrayList<Record>> getRecords() throws RemoteException {
+        return ops.getRecords();
+    }
 
     public Location getLocation() {
         if (managerID.startsWith(Location.MTL.name()))
