@@ -126,4 +126,37 @@ public class ServerTest {
         }
         assertTrue(isEdited);
     }
+
+    @org.junit.Test
+    public void editLastName() {
+        boolean isUpdated = false;
+        boolean notMoved = false;
+        try {
+            assertTrue(mtlManager.createTRecord("Mazen", "Eid", "maisonneuve", "12354", "CS", Location.MTL));
+            assertTrue(mtlManager.editRecord("TR00001", "lastName", "Amr"));
+            HashMap<Character, ArrayList<Record>> records = mtlManager.getRecords();
+
+            // check if it moved from the old key
+            if(records.containsKey('E')) {
+                for (Record record : records.get('E')){
+                    if (record.getRecordID().equals("TR00001")) {
+                        notMoved = true;
+                    }
+                }
+            }
+            // check if it moved to the new key
+            if(records.containsKey('A')) {
+                for (Record record : records.get('A')) {
+                    if (record.getRecordID().equals("TR00001")) {
+                        TeacherRecord tr = (TeacherRecord) record;
+                        isUpdated = tr.getLastName().equals("Amr");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assertFalse(notMoved);  // check if still in the old key
+        assertTrue(isUpdated);  // check if moved to the new key
+    }
 }

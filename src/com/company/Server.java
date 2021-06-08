@@ -122,11 +122,21 @@ public class Server extends UnicastRemoteObject implements CenterServer {
 
     @Override
     public synchronized boolean editRecord(String recordID, String fieldName, Object newValue) throws RemoteException {
-        // TODO:: rearrange the hashmap if the lastName changed
         for(ArrayList<Record> recordList : records.values()) {
-            for (Record record : recordList) {
-                if (record.getRecordID().equals(recordID)) {
-                    record.set(fieldName, newValue);
+            for (int i=0; i<recordList.size(); i++){
+                if (recordList.get(i).getRecordID().equals(recordID)) {
+                    recordList.get(i).set(fieldName, newValue);
+                    // rearrange the hashmap if the lastName changed
+                    if(fieldName.equals("lastName")) {
+                        // add to the new key
+                        Record recordToEdit = recordList.get(i);
+                        if (!this.records.containsKey(recordToEdit.getLastName().charAt(0)))
+                            this.records.put(recordToEdit.getLastName().charAt(0), new ArrayList<>(List.of(recordToEdit)));
+                        else
+                            this.records.get(recordToEdit.getLastName().charAt(0)).add(recordToEdit);
+                        // remove from the old HM key
+                        recordList.remove(i);
+                    }
                     try {
                         writeEvent("RECORD EDITED: Changed record " + recordID + "'s \"" + fieldName + "\" to be " + newValue.toString());
                     } catch (IOException e) {
