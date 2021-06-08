@@ -126,6 +126,7 @@ public class Server extends UnicastRemoteObject implements CenterServer {
             for (int i=0; i<recordList.size(); i++){
                 if (recordList.get(i).getRecordID().equals(recordID)) {
                     recordList.get(i).set(fieldName, newValue);
+
                     // rearrange the hashmap if the lastName changed
                     if(fieldName.equals("lastName")) {
                         // add to the new key
@@ -137,6 +138,12 @@ public class Server extends UnicastRemoteObject implements CenterServer {
                         // remove from the old HM key
                         recordList.remove(i);
                     }
+
+                    // update the status date if the status changes
+                    else if(fieldName.equals("status")) {
+                        recordList.get(i).set("statusDate", new Date(new Date().getTime()));
+                    }
+
                     try {
                         writeEvent("RECORD EDITED: Changed record " + recordID + "'s \"" + fieldName + "\" to be " + newValue.toString());
                     } catch (IOException e) {

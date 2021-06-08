@@ -14,9 +14,7 @@ import org.junit.After;
 
 import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -127,6 +125,9 @@ public class ServerTest {
         assertTrue(isEdited);
     }
 
+    /**
+     * test whether the HashMap gets rearranged if the lastName changes
+     */
     @org.junit.Test
     public void editLastName() {
         boolean isUpdated = false;
@@ -158,5 +159,40 @@ public class ServerTest {
         }
         assertFalse(notMoved);  // check if still in the old key
         assertTrue(isUpdated);  // check if moved to the new key
+    }
+
+
+    /**
+     * test whether the statusDate gets updated if the status changes
+     */
+    @org.junit.Test
+    public void isStatusDateUpdated() {
+        boolean isTested = false;
+        try {
+            Date initialDate = new Date(new Date().getTime());
+            assertTrue(mtlManager.createSRecord(
+                    "Mazen",
+                    "Eid",
+                    new ArrayList<String>(Arrays.asList("DSD", "CS")),
+                    Status.ACTIVE,
+                    initialDate));
+            assertTrue(mtlManager.editRecord("SR00001", "status", Status.INACTIVE));
+            HashMap<Character, ArrayList<Record>> records = mtlManager.getRecords();
+
+            // check if the date got upadted
+            if(records.containsKey('E')) {
+                for (Record record : records.get('E')){
+                    if (record.getRecordID().equals("SR00001")) {
+                        StudentRecord recordSR = (StudentRecord) record;
+                        assertEquals(recordSR.getStatus(), Status.INACTIVE);
+                        assertTrue(recordSR.getStatusDate().after(initialDate));
+                        isTested = true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assertTrue(isTested);
     }
 }
