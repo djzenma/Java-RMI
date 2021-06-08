@@ -31,4 +31,16 @@ public class TeacherRecord extends Record implements Serializable {
     public String getPhone() {
         return (String) map.get("phone");
     }
+
+    public String getAddress() {
+        return (String) map.get("address");
+    }
+
+    public String getSpecialization() {
+        return (String) map.get("specialization");
+    }
+
+    public Location getLocation() {
+        return (Location) map.get("location");
+    }
 }

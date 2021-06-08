@@ -149,7 +149,6 @@ public class Server extends UnicastRemoteObject implements CenterServer {
 
     @Override
     public HashMap<Character, ArrayList<Record>> getRecords() throws RemoteException {
-        System.out.println("HERE1 ");
         return new HashMap<Character, ArrayList<Record>>(records);
     }
 

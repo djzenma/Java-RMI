@@ -26,4 +26,16 @@ public class StudentRecord extends Record  implements Serializable {
                 "status: " + ((Status) map.get("status")).name() + ", " +
                 "statusDate: " + ((Date) map.get("statusDate")).toString();
     }
+
+    public ArrayList<String> getCourses() {
+        return (ArrayList<String>) map.get("courses");
+    }
+
+    public Status getStatus() {
+        return (Status) map.get("status");
+    }
+
+    public Date getStatusDate() {
+        return (Date) map.get("statusDate");
+    }
 }

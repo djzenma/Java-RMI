@@ -55,7 +55,7 @@ public class ServerTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown(){
         recordIDsServer.destroy();
         mtlServer.destroy();
         lvlServer.destroy();

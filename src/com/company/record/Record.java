@@ -24,6 +24,10 @@ public class Record implements Serializable {
         map.put(field, value);
     }
 
+    public String getFirstName() {
+        return (String) map.get("firstName");
+    }
+
     public String getLastName() {
         return (String) map.get("lastName");
     }
