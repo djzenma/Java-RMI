@@ -122,6 +122,14 @@ public class Server extends UnicastRemoteObject implements CenterServer {
 
     @Override
     public synchronized boolean editRecord(String recordID, String fieldName, Object newValue) throws RemoteException {
+        TeacherRecord templateTR = new TeacherRecord(null, null, null, null, null, null, null);
+        StudentRecord templateSR = new StudentRecord(null, null, null, null, null, null);
+
+        // check if fieldname is valid for the record type
+        if((recordID.startsWith("TR") && !templateTR.getFieldNames().contains(fieldName))
+            || (recordID.startsWith("SR") && !templateSR.getFieldNames().contains(fieldName)))
+            return false;
+
         for(ArrayList<Record> recordList : records.values()) {
             for (int i=0; i<recordList.size(); i++){
                 if (recordList.get(i).getRecordID().equals(recordID)) {

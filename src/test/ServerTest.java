@@ -125,6 +125,34 @@ public class ServerTest {
         assertTrue(isEdited);
     }
 
+    @org.junit.Test
+    public void editInvalidRecordFields() {
+        boolean isTested = false;
+        try {
+            isTested = true;
+            assertTrue(mtlManager.createSRecord(
+                    "Mazen",
+                    "Eid",
+                    new ArrayList<String>(Arrays.asList("DSD", "CS")),
+                    Status.ACTIVE,
+                    new Date(new Date().getTime())));
+            assertTrue(mtlManager.createTRecord("Mazen", "Eid", "maisonneuve", "12354", "CS", Location.MTL));
+
+            // invalid fields
+            assertFalse(mtlManager.editRecord("TR00001", "status", Status.INACTIVE));
+            assertFalse(mtlManager.editRecord("TR00001", "statusDate", new Date(new Date().getTime())));
+            assertFalse(mtlManager.editRecord("TR00001", "courses", new ArrayList<>(Arrays.asList("CE"))));
+
+            assertFalse(mtlManager.editRecord("SR00001", "address", "concordia"));
+            assertFalse(mtlManager.editRecord("SR00001", "phone", "1"));
+            assertFalse(mtlManager.editRecord("SR00001", "specialization", ""));
+            assertFalse(mtlManager.editRecord("SR00001", "location", Location.LVL));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assertTrue(isTested);
+    }
+
     /**
      * test whether the HashMap gets rearranged if the lastName changes
      */
